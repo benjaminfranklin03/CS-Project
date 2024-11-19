@@ -2,6 +2,10 @@
     "nodes": [
         {
             "id": "Noether's theorem",
+            "cluster_id": 3
+        },
+        {
+            "id": "Evolutionary epistemology",
             "cluster_id": 0
         },
         {
