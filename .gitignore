@@ -1,0 +1,13 @@
+# Bytecode files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pkl
+# Virtual environments
+venv/
+.venv/
+
+# Data files (ignore temporary or generated data files)
+data/*.json
+data/*.pkl
