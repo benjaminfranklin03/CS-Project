@@ -1,0 +1,4 @@
+#install libraries
+
+#download spacy embeddings
+python -m spacy download en_core_web_md
