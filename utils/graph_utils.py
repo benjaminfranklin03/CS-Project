@@ -99,7 +99,7 @@ def display_graph(G, graph_placeholder):
                 'border': '#ffffff',
                 'highlight': {'background': '#f9f871', 'border': '#ffffff'}
             },
-            'title': f"Node: {node_id}<br>Degree: {degree}",  # Tooltip includes degree
+            'title': f"Note: {node_id} \n Cluster: {node['cluster_id']}",  # Tooltip includes degree
             'font': {'color': '#ffffff', 'size': 16},
             'shadow': True
         })
@@ -159,9 +159,9 @@ def display_graph(G, graph_placeholder):
             "forceAtlas2Based": {
                 "gravitationalConstant": -30,   
                 "centralGravity": 0.002,      
-                "springLength": 200,           
+                "springLength": 400,           
                 "springConstant": 0.001,       
-                "damping": 0.9,                
+                "damping": 0.95,                
                 "avoidOverlap": 1              
             },
             "solver": "forceAtlas2Based",
