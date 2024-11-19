@@ -32,8 +32,7 @@ def render_tab1(note_system):
         # Create scatter plot
         fig = px.scatter(
             df, x='x', y='y', color='cluster',
-            hover_data=['title', 'content'],
-            title='Note Clusters Visualization'
+            hover_data=['title', 'content']
         )
         st.plotly_chart(fig, use_container_width=True)
 

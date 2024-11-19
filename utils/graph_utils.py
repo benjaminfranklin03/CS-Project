@@ -89,29 +89,28 @@ def display_graph(G, graph_placeholder):
     for node in net.nodes:
         node_id = node['id']
         color = component_color_map.get(node_id, '#00b4d8')  # Default color
-        node['color'] = {
-            'background': color,
-            'border': '#ffffff',
-            'highlight': {
-                'background': '#f9f871',
-                'border': '#ffffff'
-            }
-        }
+        degree = G.degree(node_id)  # Get the degree of the node
+        
         node.update({
             'shape': 'dot',
-            'size': 20,
-            'title': f"Node: {node_id}",
+            'size': 18 + degree ,  # Base size is 18, scale by degree
+            'color': {
+                'background': color,
+                'border': '#ffffff',
+                'highlight': {'background': '#f9f871', 'border': '#ffffff'}
+            },
+            'title': f"Node: {node_id}<br>Degree: {degree}",  # Tooltip includes degree
             'font': {'color': '#ffffff', 'size': 16},
             'shadow': True
         })
-        logger.debug(f"Node '{node_id}' assigned color {color}")
+        logger.debug(f"Node '{node_id}' assigned color {color} and size {18 + degree}")
 
     # Customize edge appearance
     for edge in net.edges:
         edge['color'] = {'color': '#555555', 'highlight': '#ffffff'}
         edge.update({
-            'width': 2,
-            'smooth': {'type': 'continuous', 'forceDirection': 'none', 'roundness': 0.5}
+            'width': 1,  
+            'smooth': {'type': 'straight'}  # Straight edges
         })
 
     # Enhanced interaction settings
@@ -119,13 +118,13 @@ def display_graph(G, graph_placeholder):
     {
         "nodes": {
             "shape": "dot",
-            "size": 20,
+            "size": 18,
             "font": {
                 "size": 16,
                 "color": "#ffffff"
             },
-            "borderWidth": 2,
-            "borderWidthSelected": 4,
+            "borderWidth": 0.5,
+            "borderWidthSelected": 0.5,
             "shadow": {
                 "enabled": true,
                 "color": "#000000",
@@ -139,7 +138,7 @@ def display_graph(G, graph_placeholder):
                 "color": "#555555",
                 "highlight": "#ffffff"
             },
-            "width": 2,
+            "width": 1,
             "smooth": {
                 "type": "continuous",
                 "forceDirection": "none",
@@ -158,15 +157,20 @@ def display_graph(G, graph_placeholder):
         },
         "physics": {
             "forceAtlas2Based": {
-                "gravitationalConstant": -50,
-                "centralGravity": 0.01,
-                "springLength": 100,
-                "springConstant": 0.08,
-                "damping": 0.4,
-                "avoidOverlap": 0.5
+                "gravitationalConstant": -30,   
+                "centralGravity": 0.002,      
+                "springLength": 200,           
+                "springConstant": 0.001,       
+                "damping": 0.9,                
+                "avoidOverlap": 1              
             },
-            "minVelocity": 0.75,
-            "solver": "forceAtlas2Based"
+            "solver": "forceAtlas2Based",
+            "timestep": 0.35,                  
+            "stabilization": {
+                "enabled": true,
+                "iterations": 1000,            
+                "updateInterval": 25
+            }    
         },
         "layout": {
             "randomSeed": 42

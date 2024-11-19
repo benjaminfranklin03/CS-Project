@@ -21,7 +21,6 @@ GRAPH_FILE = "data/knowledge_graph.json"
 def render_tab5(note_system):
       
     st.header("Knowledge Graph")
-    st.write("### Interactive Knowledge Graph")
     graph_placeholder = st.empty()
     display_graph(st.session_state.knowledge_graph, graph_placeholder)
 
