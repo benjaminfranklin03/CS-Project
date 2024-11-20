@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 # ===========================================================
 # Constant
 # ===========================================================
-GRAPH_FILE = "data/knowledge_graph.json"
+GRAPH_FILE = "cache/knowledge_graph.json"
 
 # ===========================================================
 # Rendering the Knowledge Graph Tab

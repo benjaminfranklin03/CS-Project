@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 # ===========================================================
 # Constants
 # ===========================================================
-GRAPH_FILE = "data/knowledge_graph.json"
+GRAPH_FILE = "cache/knowledge_graph.json"
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
 ALLOWED_EXTENSIONS = ["txt", "pdf"]
 

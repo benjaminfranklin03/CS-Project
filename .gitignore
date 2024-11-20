@@ -7,6 +7,5 @@ __pycache__/
 venv/
 .venv/
 
-# Data files (ignore temporary or generated data files)
-data/knowledge_graph.json
-data/embeddings_cache.pkl
+# Cached files (ignore temporary or generated data files)
+cache/

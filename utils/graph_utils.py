@@ -158,11 +158,11 @@ def display_graph(G, graph_placeholder):
         "physics": {
             "forceAtlas2Based": {
                 "gravitationalConstant": -30,   
-                "centralGravity": 0.002,      
+                "centralGravity": 0.001,      
                 "springLength": 400,           
                 "springConstant": 0.001,       
-                "damping": 0.95,                
-                "avoidOverlap": 1              
+                "damping": 0.9,                
+                "avoidOverlap": 1            
             },
             "solver": "forceAtlas2Based",
             "timestep": 0.35,                  

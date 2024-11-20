@@ -3,7 +3,7 @@
 # ===========================================================
 import os
 import logging
-import pickle
+from cloudpickle import pickle
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 from datetime import datetime
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 # ===========================================================
 # Constant
 # ===========================================================
-EMBEDDINGS_CACHE = 'data/embeddings_cache.pkl'
+EMBEDDINGS_CACHE = 'cache/embeddings_cache.pkl'
 
 # ===========================================================
 # Data Class
