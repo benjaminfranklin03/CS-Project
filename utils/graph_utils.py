@@ -140,7 +140,7 @@ def display_graph(G, graph_placeholder):
             },
             "width": 1,
             "smooth": {
-                "type": "continuous",
+                "type": "dynamic",
                 "forceDirection": "none",
                 "roundness": 0.5
             }
@@ -159,10 +159,10 @@ def display_graph(G, graph_placeholder):
             "forceAtlas2Based": {
                 "gravitationalConstant": -30,   
                 "centralGravity": 0.001,      
-                "springLength": 400,           
+                "springLength": 150,           
                 "springConstant": 0.001,       
                 "damping": 0.9,                
-                "avoidOverlap": 1            
+                "avoidOverlap": 0.5            
             },
             "solver": "forceAtlas2Based",
             "timestep": 0.35,                  

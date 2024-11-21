@@ -27,14 +27,16 @@ logger = logging.getLogger(__name__)
 # ===========================================================
 # Constant
 # ===========================================================
-GRAPH_FILE = "data/knowledge_graph.json"
+GRAPH_FILE = "cache/knowledge_graph.json"
 
 # ===========================================================
 # Initialize and Cache the NoteEmbeddingSystem
 # ===========================================================
 @st.cache_resource
 def get_note_system():
-    return NoteEmbeddingSystem()
+    if 'note_system' not in st.session_state:
+        st.session_state.note_system = NoteEmbeddingSystem()
+    return st.session_state.note_system
 
 # ===========================================================
 # Main Function

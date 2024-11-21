@@ -6,7 +6,6 @@ import logging
 
 import streamlit as st
 from utils.graph_utils import save_graph, display_graph
-
 # ===========================================================
 # Logging
 # ===========================================================

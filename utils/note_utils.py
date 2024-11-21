@@ -3,7 +3,7 @@
 # ===========================================================
 import os
 import logging
-from cloudpickle import pickle
+import cloudpickle
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 from datetime import datetime
@@ -404,7 +404,7 @@ class NoteEmbeddingSystem:
         """
         try:
             with open(EMBEDDINGS_CACHE, 'wb') as f:
-                pickle.dump({
+                cloudpickle.dump({
                     'notes': self.notes,
                     'embeddings_matrix': self.embeddings_matrix
                 }, f)
@@ -419,7 +419,7 @@ class NoteEmbeddingSystem:
         try:
             if os.path.exists(EMBEDDINGS_CACHE):
                 with open(EMBEDDINGS_CACHE, 'rb') as f:
-                    cache_data = pickle.load(f)
+                    cache_data = cloudpickle.load(f)
                     self.notes = cache_data['notes']
                     self.embeddings_matrix = cache_data['embeddings_matrix']
                 logger.info("Loaded cache successfully.")
