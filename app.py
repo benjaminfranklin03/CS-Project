@@ -17,6 +17,7 @@ from tabs.tab2 import render_tab2
 from tabs.tab3 import render_tab3
 from tabs.tab4 import render_tab4
 from tabs.tab5 import render_tab5
+from tabs.tab6 import render_tab6
 
 # ===========================================================
 # Configure Logging
@@ -66,9 +67,9 @@ def main():
     # =======================================================
     # Main Content Area with Tabs
     # =======================================================
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "📊 Cluster Visualization", "📝 My Notes", 
-        "🔍 Similar Notes", "🔎 Semantic Search", "🌐 Knowledge Graph"
+        "🔍 Similar Notes", "🔎 Semantic Search", "🌐 Knowledge Graph", "❓ Q&A"
     ])
 
     with tab1:
@@ -85,6 +86,9 @@ def main():
 
     with tab5:
         render_tab5(note_system)
+
+    with tab6:
+        render_tab6(note_system)
 
 # ===========================================================
 # Running the App

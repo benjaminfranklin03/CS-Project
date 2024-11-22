@@ -45,6 +45,7 @@ class Note:
     embedding: Optional[np.ndarray] = None
     cluster_id: Optional[int] = None
     summary: Optional[str] = None #storing summary
+    is_centroid: bool = False #for identifying centroids
 
 # ===========================================================
 # Note Embedding System Class
@@ -83,7 +84,7 @@ class NoteEmbeddingSystem:
 
         # Load the summarization model
         try:
-            self.summarizer_tokenizer = AutoTokenizer.from_pretrained(summarizer_name)
+            self.summarizer_tokenizer = AutoTokenizer.from_pretrained(summarizer_name, use_fast=True) #use_fast uses faster implemenation of tokenizer
             self.summarizer_model = AutoModelForSeq2SeqLM.from_pretrained(summarizer_name).to(self.device)
             logger.info(f"Loaded summarization model: {summarizer_name}")
         except Exception as e:
@@ -268,16 +269,27 @@ class NoteEmbeddingSystem:
             cluster_labels = clustering.fit_predict(similarity_matrix)
             logger.info("Performed Affinity Propagation clustering.")
 
-            # Assign cluster IDs to notes
-            for note_id, cluster_id in zip(self.notes.keys(), cluster_labels):
-                self.notes[note_id].cluster_id = int(cluster_id)
+            # Get cluster centers (exemplars)
+            cluster_centers_indices = clustering.cluster_centers_indices_
+
+            # Map indices to note IDs
+            note_ids = list(self.notes.keys())
+            centroids = [note_ids[index] for index in cluster_centers_indices]
+
+            # Assign cluster IDs and centroid status to notes
+            for idx, (note_id, cluster_id) in enumerate(zip(note_ids, cluster_labels)):
+                note = self.notes[note_id]
+                note.cluster_id = int(cluster_id)
+                note.is_centroid = note_id in centroids  # Assign centroid status
 
             # Organize notes into clusters
             clusters: Dict[int, List[str]] = {}
-            for note_id, cluster_id in zip(self.notes.keys(), cluster_labels):
+            for note_id, cluster_id in zip(note_ids, cluster_labels):
                 clusters.setdefault(cluster_id, []).append(note_id)
 
-            logger.info(f"Formed {len(clusters)} clusters.")
+            # Store centroids in the clusters dictionary
+            self.centroids = centroids  # Keep track of centroid note IDs
+            logger.info(f"Formed {len(clusters)} clusters with centroids.")
             return clusters
         except Exception as e:
             logger.error(f"Error during clustering: {e}")
@@ -347,7 +359,7 @@ class NoteEmbeddingSystem:
     def semantic_search(self, 
                         query: str, 
                         top_k: int = 5,
-                        threshold: float = 0.6) -> List[Tuple[str, float, str]]:
+                        threshold: float = 0.1) -> List[Tuple[str, float, str]]:
         """
         Search notes using semantic similarity with explanations.
         
