@@ -13,6 +13,7 @@ from datetime import datetime
 # ===========================================================
 import numpy as np
 import torch
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.decomposition import PCA
@@ -43,6 +44,7 @@ class Note:
     created_at: datetime
     embedding: Optional[np.ndarray] = None
     cluster_id: Optional[int] = None
+    summary: Optional[str] = None #storing summary
 
 # ===========================================================
 # Note Embedding System Class
@@ -53,6 +55,7 @@ class NoteEmbeddingSystem:
     """
     def __init__(self, 
                 model_name: str = 'all-MiniLM-L6-v2',
+                summarizer_name: str = 'sshleifer/distilbart-cnn-12-6',
                 device: Optional[str] = None):
         """
         Initialize the NoteEmbeddingSystem with a SentenceTransformer model.
@@ -78,6 +81,15 @@ class NoteEmbeddingSystem:
             logger.error(f"Failed to load model '{model_name}': {e}")
             raise
 
+        # Load the summarization model
+        try:
+            self.summarizer_tokenizer = AutoTokenizer.from_pretrained(summarizer_name)
+            self.summarizer_model = AutoModelForSeq2SeqLM.from_pretrained(summarizer_name).to(self.device)
+            logger.info(f"Loaded summarization model: {summarizer_name}")
+        except Exception as e:
+            logger.error(f"Failed to load summarization model '{summarizer_name}': {e}")
+            raise
+
         # Initialize notes and embeddings
         self.notes: Dict[str, Note] = {}
         self.embeddings_matrix: Optional[np.ndarray] = None
@@ -92,19 +104,11 @@ class NoteEmbeddingSystem:
 
     def add_note(self, note_id: str, content: str, title: str) -> Note:
         """
-        Add a new note and generate its semantic embedding.
-        
-        Args:
-            note_id (str): Unique identifier for the note.
-            content (str): Content of the note.
-            title (str): Title of the note.
-        
-        Returns:
-            Note: The newly added Note object.
+        Add a new note, generate its semantic embedding, and create a summary.
         """
         if any(note.title == title for note in self.notes.values()):
             raise ValueError(f"A note with the title '{title}' already exists. Please use a unique title.")
-        
+
         if note_id in self.notes:
             raise ValueError(f"Note with ID {note_id} already exists")
 
@@ -112,13 +116,17 @@ class NoteEmbeddingSystem:
             # Generate semantic embedding
             embedding = self._generate_embedding(content)
 
+            # Generate summary
+            summary = self._generate_summary(content)
+
             # Create Note instance
             note = Note(
                 id=note_id,
                 content=content,
                 title=title,
                 created_at=datetime.now(),
-                embedding=embedding
+                embedding=embedding,
+                summary=summary  # Store the summary
             )
             self.notes[note_id] = note
             logger.info(f"Added note: {note_id}")
@@ -166,20 +174,38 @@ class NoteEmbeddingSystem:
             logger.error(f"Error while deleting note with ID {note_id}: {e}")
             return False
 
-    def clear_notes(self):
+    def _generate_summary(self, text: str, max_length: int = 120, min_length: int = 30) -> str:
         """
-        Clear all notes and embeddings, and delete the cache.
+        Generate a summary for the given text using the summarization model that takes in the first 1024 tokens as input.
         """
         try:
-            self.notes.clear()
-            self.embeddings_matrix = None
-            if os.path.exists(EMBEDDINGS_CACHE):
-                os.remove(EMBEDDINGS_CACHE)
-                logger.info("Cleared all notes and deleted cache.")
-            else:
-                logger.info("No cache file found to delete.")
+            inputs = self.summarizer_tokenizer(
+                text,
+                return_tensors='pt',
+                truncation=True,
+                max_length=1024  
+            ).to(self.device)
+            
+            #Using FP16 for faster inference
+            with torch.amp.autocast('cuda'):
+            # Generate summary IDs 
+                summary_ids = self.summarizer_model.generate(
+                    inputs['input_ids'],
+                    attention_mask=inputs['attention_mask'],
+                    max_length=max_length,
+                    min_length=min_length,
+                    num_beams=2, #low beam search breadth for faster inference
+                    early_stopping=True #stop at <EOS> token
+                )
+
+            # Decode the generated summary
+            summary = self.summarizer_tokenizer.decode(
+                summary_ids[0],
+                skip_special_tokens=True
+            )
+            return summary
         except Exception as e:
-            logger.error(f"Error clearing notes: {e}")
+            logger.error(f"Error generating summary: {e}")
             raise
 
     # =======================================================
