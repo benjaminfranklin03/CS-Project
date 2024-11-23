@@ -69,7 +69,7 @@ def main():
     # =======================================================
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "📊 Cluster Visualization", "📝 My Notes", 
-        "🔍 Similar Notes", "🌐 Knowledge Graph", "❓ Q&A"
+        "🔍 Similar Notes", "🌐 Knowledge Graph", "💬 Q&A"
     ])
 
     with tab1:
