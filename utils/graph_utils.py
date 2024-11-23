@@ -154,11 +154,12 @@ def display_graph(G, graph_placeholder):
         }
     }
     """)
-
+    
     # generate and display the graph
     graph_html = net.generate_html()
     graph_html = graph_html.replace(
-        '<body>', '<body style="margin: 0; padding: 0; background-color: #2D2D2D;">'
+    '<body>', 
+    '<body style="margin: 0; padding: 0; background-color: #2D2D2D; display: flex; justify-content: center; align-items: center; height: 100vh;">'
     )
 
     with graph_placeholder:

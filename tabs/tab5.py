@@ -4,7 +4,6 @@
 import os
 import logging
 import streamlit as st
-from utils.note_utils import NoteEmbeddingSystem
 from openai import OpenAI  
 
 # ===========================================================
@@ -64,7 +63,7 @@ def construct_rag_prompt(question, last_response, retrieved_notes):
 # ===========================================================
 # Tab 6: Q&A with Follow-Up
 # ===========================================================
-def render_tab5(note_system: NoteEmbeddingSystem):
+def render_tab5(note_system):
     """
     Render the Q&A tab with follow-up support using optimized RAG.
     """
