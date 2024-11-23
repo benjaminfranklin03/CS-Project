@@ -38,7 +38,7 @@ def load_graph(file_path):
         return nx.Graph()
 
 # ===========================================================
-# Save the knowledge graph to a JSON file
+# Saving the knowledge graph to a JSON file
 # ===========================================================
 def save_graph(G, file_path):
     
@@ -59,18 +59,18 @@ def save_graph(G, file_path):
 # ===========================================================
 def display_graph(G, graph_placeholder):
     """
-    Display the knowledge graph using PyVis within a Streamlit app.
+    Display the knowledge graph using PyVis within a streamlit app
 
     Args:
-        G: The NetworkX graph to display.
-        graph_placeholder: The Streamlit placeholder where the graph will be rendered.
+        G: the NetworkX graph we display
+        graph_placeholder: the streamlit placeholder where the graph will be rendered
     """
-    # Initialize PyVis Network with dark theme settings
+    # initialize PyVis Network with dark theme settings
     net = Network(height='750px', width='100%', bgcolor='#1e1e1e', font_color='white', directed=False, notebook=False)
     net.force_atlas_2based()  # Apply force-directed layout
     net.from_nx(G)  # Convert NetworkX graph to PyVis
 
-    # Identify connected components and assign colors
+    # identify connected components and assign colors
     connected_components = list(nx.connected_components(G))
     num_components = len(connected_components)
     logger.info(f"Number of connected components: {num_components}")
@@ -113,7 +113,7 @@ def display_graph(G, graph_placeholder):
             'smooth': {'type': 'straight'}  # Straight edges
         })
 
-    # Enhanced interaction settings
+    # enhanced interaction settings
     net.set_options('''
     {
         "nodes": {
@@ -181,7 +181,7 @@ def display_graph(G, graph_placeholder):
     }
     ''')
 
-    # Generate and display the graph
+    # generate and display the graph
     graph_html = net.generate_html()
     graph_html = graph_html.replace('<body>', '<body style="margin: 0; padding: 0; background-color: #1e1e1e;">')
     graph_html = graph_html.replace('width="100%"', 'width="100%" style="width: 100%; height: 100%;"')
@@ -195,13 +195,29 @@ def display_graph(G, graph_placeholder):
 # ===========================================================
 def remove_note_from_graph(note_title: str):
     """
-    Remove a note from the knowledge graph by its title.
+    Remove a note from the knowledge graph by its title
 
-    Args:
-        note_title: The title of the note to remove.
+    note_title: The title of the note to remove
     """
     if note_title in st.session_state.knowledge_graph:
         st.session_state.knowledge_graph.remove_node(note_title)
         logger.info(f"Removed node '{note_title}' from the knowledge graph.")
     else:
         logger.warning(f"Node '{note_title}' not found in the knowledge graph.")
+
+
+def rename_node_in_graph(G, old_title: str, new_title: str):
+    """
+    Rename a node in the graph from old_title to new_title
+
+    Args:
+        G: the knowledge graph
+        old_title: the current title of the node
+        new_title: the new title of the node
+    """
+    if old_title in G:
+        mapping = {old_title: new_title}
+        nx.relabel_nodes(G, mapping, copy=False)
+        logger.info(f"Renamed node '{old_title}' to '{new_title}' in the knowledge graph.")
+    else:
+        logger.warning(f"Node '{old_title}' not found in the knowledge graph.")

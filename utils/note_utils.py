@@ -465,3 +465,41 @@ class NoteEmbeddingSystem:
                 logger.info("No cache found. Starting fresh.")
         except Exception as e:
             logger.error(f"Failed to load cache: {e}")
+    
+
+    def update_note(self, note_id: str, new_content: str, new_title: str) -> Note:
+        """
+        Update an existing note's content and title, regenerate embedding and summary.
+        """
+        if note_id not in self.notes:
+            raise ValueError(f"Note with ID {note_id} does not exist.")
+
+        # check for duplicate title
+        if any(note.title == new_title and note.id != note_id for note in self.notes.values()):
+            raise ValueError(f"A note with the title '{new_title}' already exists. Please use a unique title.")
+
+        try:
+            # generate new embedding
+            embedding = self._generate_embedding(new_content)
+
+            # generate new summary
+            summary = self._generate_summary(new_content)
+
+            # update the note
+            note = self.notes[note_id]
+            note.content = new_content
+            note.title = new_title
+            note.embedding = embedding
+            note.summary = summary
+            note.created_at = datetime.now()  # Update the timestamp
+
+            # update embeddings matrix
+            self._update_embeddings_matrix()
+
+            # save the updated note to cache
+            self._save_cache()
+
+            return note
+        except Exception as e:
+            logger.error(f"Failed to update note '{note_id}': {e}")
+            raise

@@ -1,10 +1,12 @@
-# CS Project
+# Notesidian
 
 # Introduction
 
 # Features
 
 # Video
+
+# Contribution Matrix
 
 # Setup Instructions
 
@@ -21,9 +23,9 @@
 
 The application requires an OpenAI API key to use the RAG feature with GPT models. You can set it up using any of the following methods:
 
-### A. Set it Temporarily in the Shell
+### A. Set it temporarily in your shell
 
-- **For Bash (Linux/macOS):**
+- **For Bash (Linux/MacOS):**
 
         export OPENAI_API_KEY=your-api-key
 
