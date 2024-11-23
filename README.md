@@ -8,24 +8,24 @@ The application also integrates GPT-based Retrieval-Augmented Generation (RAG) f
 
 ## Features
 
-- **Note Management**
+- **📝 Note Management**
   - Create, edit, and delete notes through an intuitive interface.
   - Upload and process text or PDF files as notes.
   - Automatically generate summaries for your notes.
 
-- **Semantic Clustering**
+- **📊 Semantic Clustering**
   - Automatically group notes into clusters using MiniLM-L6-v2 embeddings and Affinity Propagation.
   - Visualize clusters in 2D with PCA and Plotly.
 
-- **Note Similarity Search**
+- **🔍 Note Similarity Search**
   - Search for similar notes using semantic embeddings.
   - View summaries and content of similar notes.
 
-- **Knowledge Graph**
+- **🌐 Knowledge Graph**
   - Visualize notes as an interactive graph using PyVis.
   - Manually add or remove relationships between notes to represent relationships.
 
-- **GPT Integration**
+- **💬 Q&A with GPT**
   - Use RAG to retrieve relevant notes and answer questions contextually.
   - View summaries of retrieved notes for each query.
 
