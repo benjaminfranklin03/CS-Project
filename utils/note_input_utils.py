@@ -38,7 +38,8 @@ def render_note_input_forms(note_system):
         st.markdown("## 🖊️ Write Note (Full Screen)")
         with st.form("full_screen_note_form"):
             title = st.text_input("Note Title", key="full_screen_title")
-            content = st.text_area("Note Content", height=500, key="full_screen_content")
+            content = st.text_area("Note Content", height=500, key="full_screen_content", 
+                                    placeholder="Write your note here... You can include LaTeX expressions using $$...$$. For example, $$E = mc^2$$.")
             submit_button = st.form_submit_button("Add Note")
 
         if submit_button:

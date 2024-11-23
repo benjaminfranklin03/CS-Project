@@ -58,7 +58,7 @@ def render_tab2(note_system):
                 if st.session_state[edit_mode_key]:
                     with st.form(f"edit_form_{note_id}", clear_on_submit=False):
                         new_title = st.text_input("Edit Title", value=note.title, key=edit_title_key)
-                        new_content = st.text_area("Edit Content", value=note.content, key=edit_content_key)
+                        new_content = st.text_area("Edit Content", value=note.content, key=edit_content_key, height=500)
                         submit_edit = st.form_submit_button("Save Changes")
                         cancel_edit = st.form_submit_button("Cancel")
 
