@@ -16,7 +16,7 @@ import plotly.express as px
 logger = logging.getLogger(__name__)
 
 # ===========================================================
-# Loading the knowledge graph from a JSON file
+# Loading the knowledge graph from the JSON file
 # ===========================================================
 @st.cache_data(show_spinner=False)
 def load_graph(file_path):
@@ -25,10 +25,10 @@ def load_graph(file_path):
         with open(file_path, "r") as f:
             data = json.load(f)
         G = nx.Graph()
-        # Add nodes with attributes
+        # add nodes with attributes
         for node in data.get("nodes", []):
             G.add_node(node["id"], cluster_id=node.get("cluster_id", 0))
-        # Add edges
+        # add edges
         for edge in data.get("edges", []):
             G.add_edge(edge[0], edge[1])
         logger.debug("Graph loaded successfully from JSON.")
@@ -38,7 +38,7 @@ def load_graph(file_path):
         return nx.Graph()
 
 # ===========================================================
-# Saving the knowledge graph to a JSON file
+# Saving the knowledge graph to the JSON file
 # ===========================================================
 def save_graph(G, file_path):
     
@@ -59,86 +59,66 @@ def save_graph(G, file_path):
 # ===========================================================
 def display_graph(G, graph_placeholder):
     """
-    Display the knowledge graph using PyVis within a streamlit app
-
-    Args:
-        G: the NetworkX graph we display
-        graph_placeholder: the streamlit placeholder where the graph will be rendered
+    Displays the customized knowledge graph using PyVis
     """
-    # initialize PyVis Network with dark theme settings
-    net = Network(height='750px', width='100%', bgcolor='#1e1e1e', font_color='white', directed=False, notebook=False)
-    net.force_atlas_2based()  # Apply force-directed layout
-    net.from_nx(G)  # Convert NetworkX graph to PyVis
+    # Initialize PyVis Network with improved dark theme settings
+    net = Network(height="740px", width="100%", bgcolor="#3C3C3C", font_color="white", directed=False, notebook=False)
+    net.force_atlas_2based()  # apply force-directed layout for smoother spacing
+    net.from_nx(G)  # convert NetworkX graph to PyVis
 
-    # identify connected components and assign colors
+    # identify connected components and assign unique colors
     connected_components = list(nx.connected_components(G))
-    num_components = len(connected_components)
-    logger.info(f"Number of connected components: {num_components}")
+    color_palette = px.colors.qualitative.Vivid  # brighter colors
+    if len(connected_components) > len(color_palette):
+        color_palette *= (len(connected_components) // len(color_palette) + 1)  
 
-    color_palette = px.colors.qualitative.Plotly
-    if num_components > len(color_palette):
-        color_palette *= (num_components // len(color_palette) + 1)
+    component_color_map = {
+        node: color_palette[idx % len(color_palette)]
+        for idx, component in enumerate(connected_components)
+        for node in component
+    }
 
-    component_color_map = {}
-    for idx, component in enumerate(connected_components):
-        color = color_palette[idx % len(color_palette)]
-        for node in component:
-            component_color_map[node] = color
-
-    # Customize node appearance
+    # customize node appearance
     for node in net.nodes:
-        node_id = node['id']
-        color = component_color_map.get(node_id, '#00b4d8')  # Default color
-        degree = G.degree(node_id)  # Get the degree of the node
-        
+        node_id = node["id"]
+        degree = G.degree[node_id]  # node degree (i.e. number of edges)
+        cluster_color = component_color_map.get(node_id, "#C9A66E")  # default to gold if no color assigned
+
         node.update({
-            'shape': 'dot',
-            'size': 18 + degree ,  # Base size is 18, scale by degree
-            'color': {
-                'background': color,
-                'border': '#ffffff',
-                'highlight': {'background': '#f9f871', 'border': '#ffffff'}
+            "shape": "dot",
+            "size": 15 + degree,  # scale size by the number of connections
+            "color": {
+                "background": cluster_color,
+                "border": "#FFFFFF",
+                "highlight": {"background": "#FFD700", "border": "#FFFFFF"},  # gold for hovering
             },
-            'title': f"Note: {node_id} \n Cluster: {node['cluster_id']}",  # Tooltip includes degree
-            'font': {'color': '#ffffff', 'size': 16},
-            'shadow': True
-        })
-        logger.debug(f"Node '{node_id}' assigned color {color} and size {18 + degree}")
-
-    # Customize edge appearance
-    for edge in net.edges:
-        edge['color'] = {'color': '#555555', 'highlight': '#ffffff'}
-        edge.update({
-            'width': 1,  
-            'smooth': {'type': 'straight'}  # Straight edges
+            "title": f"<b>Node:</b> {node_id}<br><b>Degree:</b> {degree}<br><b>Cluster:</b> {node.get('cluster_id', 'N/A')}",
+            "font": {"color": "#FFFFFF", "size": 14}
         })
 
-    # enhanced interaction settings
-    net.set_options('''
+
+    # customized interaction settings
+    net.set_options("""
     {
         "nodes": {
-            "shape": "dot",
-            "size": 18,
             "font": {
                 "size": 16,
-                "color": "#ffffff"
+                "color": "#FFFFFF"
             },
-            "borderWidth": 0.5,
-            "borderWidthSelected": 0.5,
+            "borderWidth": 1,
+            "borderWidthSelected": 2,
             "shadow": {
                 "enabled": true,
                 "color": "#000000",
-                "size": 10,
-                "x": 0,
-                "y": 0
+                "size": 10
             }
         },
         "edges": {
             "color": {
                 "color": "#555555",
-                "highlight": "#ffffff"
+                "highlight": "#FFD700"
             },
-            "width": 1,
+            "width": 0.5,
             "smooth": {
                 "type": "dynamic",
                 "forceDirection": "none",
@@ -150,42 +130,36 @@ def display_graph(G, graph_placeholder):
             "dragNodes": true,
             "zoomView": true,
             "dragView": true,
-            "tooltipDelay": 200,
-            "multiselect": true,
-            "navigationButtons": true,
-            "keyboard": true
+            "tooltipDelay": 200
         },
         "physics": {
             "forceAtlas2Based": {
-                "gravitationalConstant": -30,   
-                "centralGravity": 0.001,      
-                "springLength": 150,           
-                "springConstant": 0.001,       
-                "damping": 0.9,                
-                "avoidOverlap": 0.5            
+                "gravitationalConstant": -50,
+                "centralGravity": 0.006,
+                "springLength": 200,
+                "springConstant": 0.005,
+                "damping": 0.8,
+                "avoidOverlap": 0.75
             },
             "solver": "forceAtlas2Based",
-            "timestep": 0.35,                  
+            "timestep": 0.4,
             "stabilization": {
                 "enabled": true,
-                "iterations": 1000,            
+                "iterations": 500,
                 "updateInterval": 25
-            }    
+            }
         },
         "layout": {
             "randomSeed": 42
-        },
-        "manipulation": {
-            "enabled": false
         }
     }
-    ''')
+    """)
 
     # generate and display the graph
     graph_html = net.generate_html()
-    graph_html = graph_html.replace('<body>', '<body style="margin: 0; padding: 0; background-color: #1e1e1e;">')
-    graph_html = graph_html.replace('width="100%"', 'width="100%" style="width: 100%; height: 100%;"')
-    graph_html = graph_html.replace('height="750px"', 'height="100%" style="height:100%;"')
+    graph_html = graph_html.replace(
+        '<body>', '<body style="margin: 0; padding: 0; background-color: #2D2D2D;">'
+    )
 
     with graph_placeholder:
         st.components.v1.html(graph_html, height=750, width=1000, scrolling=False)
@@ -205,13 +179,15 @@ def remove_note_from_graph(note_title: str):
     else:
         logger.warning(f"Node '{note_title}' not found in the knowledge graph.")
 
-
+# ===========================================================
+# Renaming a node int the knowledge graph when editing a note
+# ===========================================================
 def rename_node_in_graph(G, old_title: str, new_title: str):
     """
     Rename a node in the graph from old_title to new_title
 
     Args:
-        G: the knowledge graph
+        G: knowledge graph
         old_title: the current title of the node
         new_title: the new title of the node
     """

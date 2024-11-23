@@ -1,0 +1,18 @@
+# ===========================================================
+# Notesidian Configuration - Theme and Settings
+# ===========================================================
+
+[theme]
+base = "dark"                    # dark mode
+primaryColor = "#E1C16E"         # gold for primary elements
+backgroundColor = "#2D2D2D"      # dark grey background
+secondaryBackgroundColor = "#3C3C3C"  # lighter dark grey for containers
+textColor = "#EAEAEA"            # off-white text
+font = "serif"                   
+
+[server]
+port = 8501                      # default port for the app
+headless = false                  # run without opening a browser (set to true if deployed)
+
+[runner]
+fastReruns = true                # for fast development reruns

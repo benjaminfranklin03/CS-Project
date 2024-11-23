@@ -68,7 +68,7 @@ def render_tab5(note_system: NoteEmbeddingSystem):
     """
     Render the Q&A tab with follow-up support using optimized RAG.
     """
-    st.header("Q&A with Follow-Up")
+    st.header("Q&A Sessions")
 
     # Initialize last response and history in session state
     if 'last_model_response' not in st.session_state:

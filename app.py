@@ -45,8 +45,8 @@ def get_note_system():
 def main():
     
     # Page configuration and title
-    st.set_page_config(page_title="Notesidian", page_icon="📝", layout="wide")
-    st.title("📝 Notesidian") 
+    st.set_page_config(page_title="Notesidian", page_icon="💡", layout="wide")
+    st.title("💡 Notesidian") 
 
     # Initialize note system and knowledge graph
     note_system = get_note_system()
