@@ -124,10 +124,10 @@ def render_tab1(note_system):
             with st.expander(f"Cluster {cluster_id} ({len(note_ids)} notes)"):
                 cluster_notes = [note_system.notes[n_id] for n_id in note_ids]
                 for note in cluster_notes:
-                    centroid_marker = " (Centroid)" if note.is_centroid else ""
+                    centroid_marker = " *(Centroid)*" if note.is_centroid else ""
                     st.markdown(f"**{note.title}{centroid_marker}**")
                     truncated_content = (note.content[:200] + '...') if len(note.content) > 200 else note.content
-                    st.write(truncated_content)
+                    st.markdown(truncated_content)
     elif note_system.notes:
         st.info("Add another note to see the cluster visualization!")
     else:

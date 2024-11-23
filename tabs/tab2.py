@@ -99,9 +99,3 @@ def render_tab2(note_system):
                     st.write(note.content)
     else:
         st.info("No notes added yet. Add some notes using the sidebar!")
-
-    
-
-
-#need to implement the similarity explanation in tab4
-#need to implement an eddit note button in tab2

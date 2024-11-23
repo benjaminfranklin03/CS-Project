@@ -376,13 +376,13 @@ class NoteEmbeddingSystem:
             return []
 
         try:
-            # Generate query embedding
+            # generate embedding for the query
             query_embedding = self._generate_embedding(query).reshape(1, -1)
 
-            # Calculate semantic similarities
+            # calculate semantic similarities
             similarities = cosine_similarity(query_embedding, self.embeddings_matrix)[0]
 
-            # Get top matches above threshold
+            # get top matches above the set threshold
             matches = []
             note_ids = list(self.notes.keys())
             sorted_indices = np.argsort(similarities)[::-1]
@@ -392,11 +392,7 @@ class NoteEmbeddingSystem:
                 if sim_score < threshold:
                     break
                 note_id = note_ids[idx]
-                note = self.notes[note_id]
-                explanation = self._generate_similarity_explanation(
-                    query, note.content, sim_score
-                )
-                matches.append((note_id, sim_score, explanation))
+                matches.append((note_id, sim_score))
                 if len(matches) >= top_k:
                     break
 
@@ -405,32 +401,6 @@ class NoteEmbeddingSystem:
         except Exception as e:
             logger.error(f"Error during semantic search: {e}")
             return []
-
-    def _generate_similarity_explanation(self, 
-                                         query: str, 
-                                         note_content: str, 
-                                         similarity: float) -> str:
-        """
-        Generate human-readable explanation of semantic similarity.
-        
-        Args:
-            query (str): The search query.
-            note_content (str): The content of the note.
-            similarity (float): The similarity score.
-        
-        Returns:
-            str: An explanation of the similarity.
-        """
-        if similarity > 0.9:
-            return "Very strong semantic match - concepts are nearly identical."
-        elif similarity > 0.8:
-            return "Strong semantic relationship - discusses the same key concepts."
-        elif similarity > 0.7:
-            return "Moderate semantic overlap - shares some important concepts."
-        elif similarity > 0.6:
-            return "Weak semantic connection - tangentially related concepts."
-        else:
-            return "Minimal semantic similarity - concepts are mostly different."
 
     # =======================================================
     # Cache Management Methods
