@@ -43,8 +43,6 @@ The application also integrates GPT-based Retrieval-Augmented Generation (RAG) f
 
 A walkthrough video demonstrating how to get started with Notesidian and its key features will be added soon!
 
-## Contribution Matrix
-
 ## Setup Instructions
 
 ### Clone the Repository
@@ -89,3 +87,5 @@ $env:OPENAI_API_KEY="your-api-key"
 ```bash
 streamlit run app.py
 ```
+
+## Contribution Matrix
