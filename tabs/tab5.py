@@ -88,7 +88,7 @@ def render_tab5(note_system: NoteEmbeddingSystem):
         # Extract retrieved notes
         retrieved_notes = [
             {'title': note_system.notes[note_id].title, 'summary': note_system.notes[note_id].summary}
-            for note_id, _, _ in search_results
+            for note_id, _ in search_results
         ]
 
         # Construct the prompt for RAG
