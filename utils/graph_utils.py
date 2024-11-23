@@ -90,11 +90,11 @@ def display_graph(G, graph_placeholder):
             "color": {
                 "background": cluster_color,
                 "border": "#FFFFFF",
-                "highlight": {"background": "#FFD700", "border": "#FFFFFF"},  # gold for hovering
+                "highlight": {"background": "#E1C16E", "border": "#E1C16E"},  # gold for hovering
             },
-            "title": f"<b>Node:</b> {node_id}<br><b>Degree:</b> {degree}<br><b>Cluster:</b> {node.get('cluster_id', 'N/A')}",
+            "title": f"Node: {node_id}\nCluster: {node.get('cluster_id', 'N/A')}",
             "font": {"color": "#FFFFFF", "size": 14}
-        })
+        }) 
 
 
     # customized interaction settings
@@ -116,7 +116,7 @@ def display_graph(G, graph_placeholder):
         "edges": {
             "color": {
                 "color": "#555555",
-                "highlight": "#FFD700"
+                "highlight": "#E1C16E"
             },
             "width": 0.5,
             "smooth": {

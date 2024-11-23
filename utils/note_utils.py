@@ -85,7 +85,7 @@ class NoteEmbeddingSystem:
         # Load the summarization model
         try:
             self.summarizer_tokenizer = AutoTokenizer.from_pretrained(summarizer_name, use_fast=True) #use_fast uses faster implemenation of tokenizer
-            self.summarizer_model = AutoModelForSeq2SeqLM.from_pretrained(summarizer_name).to(self.device)
+            self.summarizer_model = AutoModelForSeq2SeqLM.from_pretrained(summarizer_name, torch_dtype=torch.float16).to(self.device) #specify torch.float16 to prevent accidentally loading tensorflow model
             logger.info(f"Loaded summarization model: {summarizer_name}")
         except Exception as e:
             logger.error(f"Failed to load summarization model '{summarizer_name}': {e}")
