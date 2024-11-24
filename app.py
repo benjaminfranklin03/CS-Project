@@ -2,7 +2,6 @@
 # Standard- and Third Party Library Imports
 # ===========================================================
 import logging
-
 import streamlit as st
 
 # ===========================================================
