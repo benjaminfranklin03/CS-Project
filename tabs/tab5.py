@@ -122,7 +122,7 @@ def render_tab5(note_system):
             st.success("Conversation history cleared!")
 
         # Display the history
-        for idx, item in enumerate(st.session_state['conversation_history'][:-1], 1):
+        for idx, item in enumerate(reversed(st.session_state['conversation_history'][:-1]), 1):
             st.write(f"**{idx}. User:** {item['question']}")
             st.markdown(f"**Model:** {item['response']}")
             if item['retrieved_notes']:
