@@ -40,6 +40,7 @@ def render_tab3(note_system):
                             st.session_state[toggle_summary_key] = False
                         
                         with st.expander(f"📝 {note.title} (Similarity: {similarity:.2f})"):
+                            st.write("\n")
                             # toggle summary button
                             if st.button("Show Summary", key=f"tab3_toggle_summary_{note_id}"):  # Prefix to ensure uniqueness
                                 st.session_state[toggle_summary_key] = not st.session_state[toggle_summary_key]
@@ -52,6 +53,7 @@ def render_tab3(note_system):
                                 else:
                                     st.error("No summary available for this note.")
                             # display content
+                            st.write("\n")
                             st.write("**Content:**")
                             st.write(note.content)
                 else:

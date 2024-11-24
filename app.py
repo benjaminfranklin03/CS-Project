@@ -8,6 +8,7 @@ import streamlit as st
 # ===========================================================
 # Local Imports
 # ===========================================================
+from utils.css_injection_utils import inject_global_css
 from utils.note_utils import NoteEmbeddingSystem
 from utils.note_input_utils import render_note_input_forms
 from utils.file_utils import handle_file_uploads
@@ -44,24 +45,28 @@ def get_note_system():
 # ===========================================================
 def main():
     
-    # Page configuration and title
+    # page configuration
     st.set_page_config(page_title="Notesidian", page_icon="💡", layout="wide")
+    
+    # injecting global CSS for customization
+    inject_global_css()
+    
     st.title("💡 Notesidian") 
 
-    # Initialize note system and knowledge graph
+    # initializing note system and knowledge graph
     note_system = get_note_system()
     if 'knowledge_graph' not in st.session_state:
         st.session_state.knowledge_graph = load_graph(GRAPH_FILE)
 
-    # Add current notes to the knowledge graph
+    # add current notes to the knowledge graph
     for note_id, note in note_system.notes.items():
         cluster_id = note.cluster_id or 0
         st.session_state.knowledge_graph.add_node(note.title, cluster_id=cluster_id)
 
-    # Render note input forms
+    # render note input forms
     render_note_input_forms(note_system)
 
-    # Handle file uploads
+    # handle file uploads
     handle_file_uploads(note_system)
 
     # =======================================================

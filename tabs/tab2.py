@@ -82,6 +82,7 @@ def render_tab2(note_system):
                             logger.error(f"Exception updating note: {e}")
                     elif cancel_edit:
                         st.session_state[edit_mode_key] = False
+                        st.rerun()
 
                 # Delete Note Button
                 if st.button("Delete Note", key=f"delete_{note_id}"):

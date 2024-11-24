@@ -23,6 +23,7 @@ def render_note_input_forms(note_system):
 
     # Sidebar for note management
     st.sidebar.header("Note Management")
+
     if 'full_screen' not in st.session_state:
         st.session_state.full_screen = False
 
@@ -35,12 +36,14 @@ def render_note_input_forms(note_system):
     # Note input forms
     if st.session_state.full_screen:
         # Full-Screen Note Input
-        st.markdown("## 🖊️ Write Note (Full Screen)")
+        st.write("\n")
+        st.markdown("## 🖊️ Take Notes")
         with st.form("full_screen_note_form"):
             title = st.text_input("Note Title", key="full_screen_title")
             content = st.text_area("Note Content", height=500, key="full_screen_content", 
                                     placeholder="Write your note here... You can include LaTeX expressions using $$...$$. For example, $$E = mc^2$$.")
             submit_button = st.form_submit_button("Add Note")
+        st.write("---")
 
         if submit_button:
             if title and content:

@@ -63,7 +63,7 @@ def handle_file_uploads(note_system):
                 st.sidebar.error(f"Unsupported file type for {uploaded_file.name}.")
                 continue
 
-            # Add the extracted content as a note
+            # add the extracted content as a note
             title = uploaded_file.name.rsplit(".", 1)[0]
             if not content:
                 st.sidebar.warning(f"File {uploaded_file.name} is empty. Skipping.")
