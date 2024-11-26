@@ -19,7 +19,9 @@ ALLOWED_EXTENSIONS = ["txt", "pdf"]
 # File Uploading
 # ===========================================================
 def handle_file_uploads(note_system):
-    """Handle file uploads and add them as notes."""
+    """
+    Handle file uploads and add them as notes.
+    """
     st.sidebar.header("Upload Notes as Files")
     uploaded_files = st.sidebar.file_uploader(
         "Upload PDF and Text files (.pdf, .txt)", 
@@ -30,7 +32,7 @@ def handle_file_uploads(note_system):
 
     if uploaded_files:
         for uploaded_file in uploaded_files:
-            # File validation and content extraction
+            # file validation and content extraction
             if uploaded_file.size > MAX_FILE_SIZE:
                 st.sidebar.error(f"File {uploaded_file.name} is too large. Maximum allowed size is 5 MB.")
                 continue
@@ -71,20 +73,25 @@ def handle_file_uploads(note_system):
             note_id = str(uuid.uuid4())
 
             try:
+                # add the note
                 note_system.add_note(note_id, content, title)
                 st.sidebar.success(f"Uploaded and added {uploaded_file.name} as a note.")
                 cluster_id = note_system.notes[note_id].cluster_id or 0
+                # add the note to the cluster
                 st.session_state.knowledge_graph.add_node(title, cluster_id=cluster_id)
                 logger.debug(f"Added node '{title}' with cluster_id {cluster_id}")
+                # save the knowledge graph
                 save_graph(st.session_state.knowledge_graph, GRAPH_FILE)
                 if 'knowledge_graph_placeholder' in st.session_state:
                     display_graph(
                         st.session_state.knowledge_graph, 
                         st.session_state.knowledge_graph_placeholder
                     )
+            
             except ValueError as ve:
                 st.sidebar.error(f"Error adding {uploaded_file.name}: {ve}")
                 logger.error(f"ValueError adding {uploaded_file.name}: {ve}")
+                
             except Exception as e:
                 st.sidebar.error(f"An error occurred while adding {uploaded_file.name}.")
                 logger.error(f"Exception adding {uploaded_file.name}: {e}")

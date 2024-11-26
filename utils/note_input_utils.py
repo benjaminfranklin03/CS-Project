@@ -68,12 +68,15 @@ def render_note_input_forms(note_system):
             submit_button = st.form_submit_button("Add Note")
 
             if submit_button:
+                # generate id for note
                 if title and content:
                     note_id = str(uuid.uuid4())
                     try:
+                        # add note to note system
                         note_system.add_note(note_id, content, title)
                         st.sidebar.success("Note added successfully!")
                         cluster_id = note_system.notes[note_id].cluster_id or 0
+                        # add node to knowledge graph
                         st.session_state.knowledge_graph.add_node(title, cluster_id=cluster_id)
                         logger.debug(f"Added node '{title}' with cluster_id {cluster_id}")
                         save_graph(st.session_state.knowledge_graph, GRAPH_FILE)
@@ -82,11 +85,14 @@ def render_note_input_forms(note_system):
                                 st.session_state.knowledge_graph, 
                                 st.session_state.knowledge_graph_placeholder
                             )
+                    
                     except ValueError as ve:
                         st.sidebar.error(str(ve))
                         logger.error(f"ValueError: {ve}")
+                    
                     except Exception as e:
                         st.sidebar.error("An error occurred while adding the note.")
                         logger.error(f"Exception: {e}")
+                
                 else:
                     st.sidebar.error("Please provide both a title and content.")

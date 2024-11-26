@@ -10,13 +10,14 @@ import plotly.express as px
 # Rendering the Cluster Visualization Tab
 # ===========================================================
 def render_tab1(note_system):
-    st.header("Note Clusters Visualization")
     
+    st.header("Note Clusters Visualization")
+    # check if there are enough notes
     if len(note_system.notes) >= 2:
         clusters = note_system.cluster_notes()
         coords = note_system.get_2d_visualization()
 
-        # Prepare DataFrame
+        # prepare dataframe
         data = []
         for note_id, (x, y) in coords.items():
             note = note_system.notes[note_id]
@@ -35,20 +36,20 @@ def render_tab1(note_system):
         df_centroids = df[df['is_centroid']]
         df_non_centroids = df[~df['is_centroid']]
 
-        # Create figure
+        # create figure
         fig = go.Figure()
 
-        # Define color mapping for clusters
+        # define color mapping for clusters
         clusters_list = df['cluster'].unique()
         cluster_colors = px.colors.qualitative.Plotly
         color_map = {cluster: cluster_colors[i % len(cluster_colors)] for i, cluster in enumerate(clusters_list)}
 
-        # Add non-centroid notes
+        # add non-centroid notes
         fig.add_trace(go.Scatter(
             x=df_non_centroids['x'],
             y=df_non_centroids['y'],
             mode='markers',
-            name='',  # No legend entry
+            name='',  # no legend entry
             showlegend=False,
             marker=dict(
                 symbol='circle',
@@ -59,7 +60,7 @@ def render_tab1(note_system):
             hoverinfo='text',
         ))
 
-        # Add centroids
+        # add centroids
         fig.add_trace(go.Scatter(
             x=df_centroids['x'],
             y=df_centroids['y'],
@@ -71,11 +72,11 @@ def render_tab1(note_system):
                 line=dict(width=2, color='DarkSlateGrey'),
                 color=df_centroids['cluster'].map(color_map),
             ),
-            text=df_centroids.apply(lambda row: f"Title: {row['title']}<br>Cluster: {row['cluster']}", axis=1),
+            text=df_centroids.apply(lambda row: f"Title: {row['title']}<br>Cluster: {row['cluster']}", axis=1), # added hover text
             hoverinfo='text',
         ))
 
-        # Update layout
+        # update layout
         fig.update_layout(
             xaxis_title='Component 1',
             yaxis_title='Component 2',
@@ -121,11 +122,13 @@ def render_tab1(note_system):
         for cluster_id, note_ids in clusters.items():
             with st.expander(f"Cluster {cluster_id} ({len(note_ids)} notes)"):
                 cluster_notes = [note_system.notes[n_id] for n_id in note_ids]
+                
                 for note in cluster_notes:
                     centroid_marker = " *->Centroid<-*" if note.is_centroid else ""
                     st.markdown(f"**{note.title}{centroid_marker}**")
                     truncated_content = note.summary  
                     st.markdown(truncated_content)
+    
     elif note_system.notes:
         st.info("Add another note to see the cluster visualization!")
     else:

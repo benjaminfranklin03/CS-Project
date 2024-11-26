@@ -19,9 +19,11 @@ logger = logging.getLogger(__name__)
 # Loading the knowledge graph from the JSON file
 # ===========================================================
 def load_graph(file_path):
+    # check if the file exists
     if os.path.exists(file_path):
         with open(file_path, "r") as f:
             data = json.load(f)
+        
         G = nx.Graph()
         # Add nodes with attributes
         for node in data.get("nodes", []):
@@ -45,6 +47,8 @@ def load_graph(file_path):
 # Saving the knowledge graph to the JSON file
 # ===========================================================
 def save_graph(G, file_path):
+    
+    # add node attributes to the graph
     data = {
         "nodes": [{"id": node, "cluster_id": attrs.get("cluster_id", 0)} for node, attrs in G.nodes(data=True)],
         "edges": list(G.edges()),
@@ -64,7 +68,6 @@ def save_graph(G, file_path):
 def display_graph(G, graph_placeholder):
     """
     Displays the knowledge graph using PyVis with force-directed physics and straight edges.
-    This configuration aims to create a layout similar to Obsidian's graph view.
     """
 
     # Initialize PyVis Network with dark theme settings
@@ -101,9 +104,9 @@ def display_graph(G, graph_placeholder):
 
         # determine styling for center nodes
         if node_id in center_node_set:
-            background_color = cluster_color  # keeping cluster color for center nodes
-            border_color = "#FFC300"  # gold border for center nodes
-            size = 30  # larger size for center nodes
+            background_color = cluster_color  
+            border_color = "#FFC300"  
+            size = 30  
         else:
             background_color = cluster_color
             border_color = "#FFFFFF"
@@ -121,7 +124,7 @@ def display_graph(G, graph_placeholder):
             "font": {"color": "#FFFFFF", "size": 18, "face": "Georgia"},
         })
 
-    # Customize interaction settings
+    # customize interaction settings
     net.set_options("""
     {
         "nodes": {
@@ -171,7 +174,7 @@ def display_graph(G, graph_placeholder):
     }
     """)
 
-    # Generate and display the graph
+    # generate and display the graph
     graph_html = net.generate_html()
     graph_html = graph_html.replace(
         '<body>', 
@@ -188,8 +191,6 @@ def display_graph(G, graph_placeholder):
 def remove_note_from_graph(note_title: str):
     """
     Remove a note from the knowledge graph by its title
-
-    note_title: The title of the note to remove
     """
     if note_title in st.session_state.knowledge_graph:
         st.session_state.knowledge_graph.remove_node(note_title)
