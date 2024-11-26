@@ -125,7 +125,7 @@ def display_graph(G, graph_placeholder):
     net.set_options("""
     {
         "nodes": {
-            "borderWidth": 1,
+            "borderWidth": 0.5,
             "shadow": {
                 "enabled": true,
                 "color": "#000000",
@@ -153,7 +153,7 @@ def display_graph(G, graph_placeholder):
             "forceAtlas2Based": {
                 "gravitationalConstant": -150,  
                 "centralGravity": 0.005,
-                "springLength": 120,  
+                "springLength": 150,  
                 "springConstant": 0.08,
                 "avoidOverlap": 1  
             },
