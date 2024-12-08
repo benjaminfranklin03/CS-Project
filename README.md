@@ -89,3 +89,18 @@ streamlit run app.py
 ```
 
 ## Contribution Matrix
+
+|                    | **Ben**    | **Artan**   | **Frederick** | **Alex**    |
+|--------------------|------------|-------------|---------------|-------------|
+| **Project Management** | ★          | ●           | ◐             | ○           |
+| **Conceptualization**  | ★          | ●           | ●             | ◐           |
+| **Code Development**   | ★          | ○           | ○             | ○           |
+| **Documentation**      | ★          | ○           | ○             | ○           |
+| **Presentation**       | ★          | ●           | ●             | ○           |
+| **Video**              | ●          | ●           | ●             | ●           |
+
+## Legend
+- **★** Main Contributor
+- **●** Contributor
+- **◐** Supporting Role
+- **○** No Contribution
