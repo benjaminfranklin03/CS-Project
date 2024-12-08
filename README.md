@@ -90,7 +90,7 @@ streamlit run app.py
 
 ## Contribution Matrix
 
-|                    | **Ben**    | **Artan**   | **Frederick** | **Alex**    |
+|                    | **Ben Mulder**    | **Artan Sadriji**   | **Frederick Ohle** | **Alex Degenhardt**    |
 |--------------------|------------|-------------|---------------|-------------|
 | **Project Management** | ★          | ●           | ◐             | ○           |
 | **Conceptualization**  | ★          | ●           | ●             | ◐           |
