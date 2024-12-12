@@ -42,7 +42,9 @@ The application also integrates GPT-based Retrieval-Augmented Generation (RAG) f
 ## Video
 
 <p align="center">
-  <a href="https://drive.google.com/file/d/1hY9Ha8erH-HxJk4ALLBXXwInL9kPdqbQ/view?usp=drive_link" target="_blank">Click here to watch the video</a>
+  <a href="https://drive.google.com/file/d/1hY9Ha8erH-HxJk4ALLBXXwInL9kPdqbQ/view?usp=drive_link" target="_blank">
+    <img src="https://via.placeholder.com/640x360.png?text=Click+to+Watch" alt="Watch Video" width="640" height="360">
+  </a>
 </p>
 
 ## Setup Instructions
