@@ -109,3 +109,8 @@ streamlit run app.py
 - **●** Contributor
 - **◐** Supporting Role
 - **○** No Contribution
+
+
+## Acknowledgment
+
+Specific parts of this project, including the CSS injection, were developed with guidance from ChatGPT, a language model by OpenAI.
