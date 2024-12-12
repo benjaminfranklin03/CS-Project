@@ -2,7 +2,7 @@
 
 <br>
 <p align="center">
-  <img src="logo.png" alt="Notesidian Logo" width="400">
+  <img src="assets/logo.png" alt="Notesidian Logo" width="400">
 </p>
 <br>
 
