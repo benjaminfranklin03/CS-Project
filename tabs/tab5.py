@@ -26,6 +26,7 @@ def generate_model_response(prompt, model):
     """
     Generate a response from the language model using the given prompt.
     """
+    
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     try:
@@ -34,6 +35,7 @@ def generate_model_response(prompt, model):
             model=model
         )
         return response.choices[0].message.content.strip()
+    
     except Exception as e:
         logger.error(f"Error generating response: {e}")
         st.error("An error occurred while contacting the language model.")
@@ -43,15 +45,15 @@ def construct_rag_prompt(question, last_response, retrieved_notes):
     """
     Construct a RAG prompt using only the last model output and newly retrieved notes.
     """
-    # Include last model output
+    # include last model output
     context = f"Model: {last_response}" if last_response else ""
 
-    # Add newly retrieved notes
+    # add newly retrieved notes
     retrieved_info = "\n".join(
         f"<Summary{letter}>:\n{note['title']}\n\{note['summary']}</Summary{letter}>" for letter, note in zip(string.ascii_uppercase, retrieved_notes)
     )
 
-    # Combine all parts to form the prompt
+    # combine all parts to form the prompt
     prompt = (
         f"Context:\n{context}\n\n"
         f"Retrieved Notes:\n{retrieved_info}\n\n"
@@ -82,6 +84,7 @@ def render_tab5(note_system):
         submit_button = st.form_submit_button("Submit")
 
     if submit_button and question:
+        
         # Perform semantic search to retrieve relevant notes
         search_results = note_system.semantic_search(query=question, top_k=TOP_K)
 
@@ -114,8 +117,9 @@ def render_tab5(note_system):
     if st.session_state['conversation_history']:
         st.subheader("Conversation History")
 
-        # Add "Clear History" button under the header
+        # "Clear History" button under the header
         clear_button = st.button("Clear History")
+        
         if clear_button:
             # Clear conversation-related session state
             st.session_state['conversation_history'] = []
@@ -126,8 +130,10 @@ def render_tab5(note_system):
         for idx, item in enumerate(reversed(st.session_state['conversation_history'][:-1]), 1):
             st.write(f"**{idx}. User:** {item['question']}")
             st.markdown(f"**Model:** {item['response']}")
+            
             if item['retrieved_notes']:
                 with st.expander(f"Relevant Notes for Question {idx}"):
+                    
                     for note in item['retrieved_notes']:
                         st.markdown(f"**{note['title']}**")
                         st.markdown(note['summary'])

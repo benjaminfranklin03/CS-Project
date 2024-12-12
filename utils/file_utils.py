@@ -1,11 +1,15 @@
+# ===========================================================
+# Imports
+# ===========================================================
 import logging
 import uuid
-
 import streamlit as st
 import PyPDF2
-
 from utils.graph_utils import save_graph, display_graph
 
+# ===========================================================
+# Logging (for catching subtle errors)
+# ===========================================================
 logger = logging.getLogger(__name__)
 
 # ===========================================================
@@ -77,9 +81,11 @@ def handle_file_uploads(note_system):
                 note_system.add_note(note_id, content, title)
                 st.sidebar.success(f"Uploaded and added {uploaded_file.name} as a note.")
                 cluster_id = note_system.notes[note_id].cluster_id or 0
+                
                 # add the note to the cluster
                 st.session_state.knowledge_graph.add_node(title, cluster_id=cluster_id)
                 logger.debug(f"Added node '{title}' with cluster_id {cluster_id}")
+                
                 # save the knowledge graph
                 save_graph(st.session_state.knowledge_graph, GRAPH_FILE)
                 if 'knowledge_graph_placeholder' in st.session_state:

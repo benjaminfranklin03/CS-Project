@@ -64,12 +64,12 @@ class NoteEmbeddingSystem:
         Args:
             cache_dir (str): Directory to cache embeddings.
             model_name (str): Name of the SentenceTransformer model to use.
-            device (Optional[str]): Device to run the model on ('cuda' or 'cpu').
+            device: Device to run the model on 
         """
-        # Ensure the data directory exists
+        # ensure the data directory exists
         os.makedirs(os.path.dirname(EMBEDDINGS_CACHE), exist_ok=True)
 
-        # Set device
+        # set device
         self.device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
         logger.info(f"Using device: {self.device}")
 
@@ -78,25 +78,27 @@ class NoteEmbeddingSystem:
             self.model = SentenceTransformer(model_name)
             self.model.to(self.device)
             logger.info(f"Loaded model: {model_name}")
+            
         except Exception as e:
             logger.error(f"Failed to load model '{model_name}': {e}")
             raise
 
-        # Load the summarization model
+        # load the summarization model
         try:
             self.summarizer_tokenizer = AutoTokenizer.from_pretrained(summarizer_name, use_fast=True) #use_fast uses faster implemenation of tokenizer
             self.summarizer_model = AutoModelForSeq2SeqLM.from_pretrained(summarizer_name, torch_dtype=torch.float16).to(self.device) #specify torch.float16 to prevent accidentally loading tensorflow model
             logger.info(f"Loaded summarization model: {summarizer_name}")
+            
         except Exception as e:
             logger.error(f"Failed to load summarization model '{summarizer_name}': {e}")
             raise
 
-        # Initialize notes and embeddings
+        # initialize notes and embeddings
         self.notes: Dict[str, Note] = {}
         self.embeddings_matrix: Optional[np.ndarray] = None
         self.pca = PCA(n_components=2)
 
-        # Load cached embeddings if available
+        # load cached embeddings if available
         self._load_cache()
 
     # =======================================================
@@ -129,16 +131,18 @@ class NoteEmbeddingSystem:
                 embedding=embedding,
                 summary=summary  # Store the summary
             )
+            
             self.notes[note_id] = note
             logger.info(f"Added note: {note_id}")
 
-            # Update embeddings matrix
+            # update embeddings matrix
             self._update_embeddings_matrix()
 
-            # Save to cache
+            # save to cache
             self._save_cache()
 
             return note
+        
         except Exception as e:
             logger.error(f"Failed to add note '{note_id}': {e}")
             raise
@@ -158,19 +162,20 @@ class NoteEmbeddingSystem:
             return False
 
         try:
-            # Remove the note
+            # remove the note
             del self.notes[note_id]
             logger.info(f"Deleted note with ID: {note_id}")
 
-            # Update embeddings matrix
+            # update embedding matrix
             self._update_embeddings_matrix()
             logger.info("Updated embeddings matrix after deletion.")
 
-            # Save updated state to cache
+            # save updated state to cache
             self._save_cache()
             logger.info("Saved updated state to cache.")
 
             return True
+        
         except Exception as e:
             logger.error(f"Error while deleting note with ID {note_id}: {e}")
             return False
@@ -187,9 +192,10 @@ class NoteEmbeddingSystem:
                 max_length=1024  
             ).to(self.device)
             
-            #Using FP16 for faster inference
+            #using FP16 for faster inference
             with torch.amp.autocast('cuda'):
-            # Generate summary IDs 
+                
+                # generate summary IDs 
                 summary_ids = self.summarizer_model.generate(
                     inputs['input_ids'],
                     attention_mask=inputs['attention_mask'],
@@ -199,12 +205,13 @@ class NoteEmbeddingSystem:
                     early_stopping=True #stop at <EOS> token
                 )
 
-            # Decode the generated summary
+            # decode the generated summary
             summary = self.summarizer_tokenizer.decode(
                 summary_ids[0],
                 skip_special_tokens=True
             )
             return summary
+        
         except Exception as e:
             logger.error(f"Error generating summary: {e}")
             raise
@@ -231,6 +238,7 @@ class NoteEmbeddingSystem:
                 device=self.device
             )
             return embedding
+        
         except Exception as e:
             logger.error(f"Error generating embedding: {e}")
             raise
@@ -243,7 +251,9 @@ class NoteEmbeddingSystem:
             self.embeddings_matrix = np.vstack([
                 note.embedding for note in self.notes.values()
             ])
+            
             logger.info("Updated embeddings matrix.")
+            
         else:
             self.embeddings_matrix = None
             logger.info("Embeddings matrix is empty.")
@@ -260,37 +270,38 @@ class NoteEmbeddingSystem:
             return {}
 
         try:
-            # Compute similarity matrix
+            # compute similarity matrix
             similarity_matrix = cosine_similarity(self.embeddings_matrix)
             logger.info("Computed cosine similarity matrix for clustering.")
 
-            # Perform Affinity Propagation clustering
+            # Affinity Propagation clustering
             clustering = AffinityPropagation(affinity='precomputed', random_state=42)
             cluster_labels = clustering.fit_predict(similarity_matrix)
             logger.info("Performed Affinity Propagation clustering.")
 
-            # Get cluster centers (exemplars)
+            # get cluster centers
             cluster_centers_indices = clustering.cluster_centers_indices_
 
-            # Map indices to note IDs
+            # map indices to note IDs
             note_ids = list(self.notes.keys())
             centroids = [note_ids[index] for index in cluster_centers_indices]
 
-            # Assign cluster IDs and centroid status to notes
+            # assign cluster IDs and centroid status to notes
             for idx, (note_id, cluster_id) in enumerate(zip(note_ids, cluster_labels)):
                 note = self.notes[note_id]
                 note.cluster_id = int(cluster_id)
-                note.is_centroid = note_id in centroids  # Assign centroid status
+                note.is_centroid = note_id in centroids  # assign centroid status
 
-            # Organize notes into clusters
+            # organize notes into clusters
             clusters: Dict[int, List[str]] = {}
             for note_id, cluster_id in zip(note_ids, cluster_labels):
                 clusters.setdefault(cluster_id, []).append(note_id)
 
-            # Store centroids in the clusters dictionary
-            self.centroids = centroids  # Keep track of centroid note IDs
+            # store centroids in the clusters dictionary
+            self.centroids = centroids  # keep track of centroid note IDs
             logger.info(f"Formed {len(clusters)} clusters with centroids.")
             return clusters
+        
         except Exception as e:
             logger.error(f"Error during clustering: {e}")
             return {}
@@ -312,8 +323,10 @@ class NoteEmbeddingSystem:
                 note_id: (float(x), float(y))
                 for note_id, (x, y) in zip(self.notes.keys(), coords_2d)
             }
+            
             logger.info("Generated 2D visualization coordinates.")
             return visualization
+        
         except Exception as e:
             logger.error(f"Error in generating 2D visualization: {e}")
             return {}
@@ -333,6 +346,7 @@ class NoteEmbeddingSystem:
         Returns:
             List[Tuple[str, float]]: List of tuples containing (note_id, similarity_score).
         """
+        
         if note_id not in self.notes:
             logger.warning(f"Note ID '{note_id}' not found.")
             return []
@@ -345,13 +359,14 @@ class NoteEmbeddingSystem:
             query_embedding = self.notes[note_id].embedding.reshape(1, -1)
             similarities = cosine_similarity(query_embedding, self.embeddings_matrix)[0]
 
-            # Exclude the query note itself
+            # exclude the query note itself
             similar_indices = np.argsort(similarities)[::-1][1:top_k+1]
             note_ids = list(self.notes.keys())
 
             similar_notes = [(note_ids[idx], similarities[idx]) for idx in similar_indices]
             logger.info(f"Found {len(similar_notes)} similar notes for '{note_id}'.")
             return similar_notes
+        
         except Exception as e:
             logger.error(f"Error in getting similar notes: {e}")
             return []
@@ -371,6 +386,7 @@ class NoteEmbeddingSystem:
         Returns:
             List[Tuple[str, float, str]]: List of tuples containing (note_id, similarity_score, explanation).
         """
+        
         if not self.notes:
             logger.info("No notes available for semantic search.")
             return []
@@ -398,6 +414,7 @@ class NoteEmbeddingSystem:
 
             logger.info(f"Found {len(matches)} matches for query.")
             return matches
+        
         except Exception as e:
             logger.error(f"Error during semantic search: {e}")
             return []
@@ -416,7 +433,9 @@ class NoteEmbeddingSystem:
                     'notes': self.notes,
                     'embeddings_matrix': self.embeddings_matrix
                 }, f)
+                
             logger.info("Saved cache successfully.")
+            
         except Exception as e:
             logger.error(f"Failed to save cache: {e}")
 
@@ -426,13 +445,17 @@ class NoteEmbeddingSystem:
         """
         try:
             if os.path.exists(EMBEDDINGS_CACHE):
+                
                 with open(EMBEDDINGS_CACHE, 'rb') as f:
                     cache_data = cloudpickle.load(f)
                     self.notes = cache_data['notes']
                     self.embeddings_matrix = cache_data['embeddings_matrix']
+                    
                 logger.info("Loaded cache successfully.")
+                
             else:
                 logger.info("No cache found. Starting fresh.")
+                
         except Exception as e:
             logger.error(f"Failed to load cache: {e}")
     
@@ -461,7 +484,7 @@ class NoteEmbeddingSystem:
             note.title = new_title
             note.embedding = embedding
             note.summary = summary
-            note.created_at = datetime.now()  # Update the timestamp
+            note.created_at = datetime.now()  # update timestamp
 
             # update embeddings matrix
             self._update_embeddings_matrix()
@@ -470,6 +493,7 @@ class NoteEmbeddingSystem:
             self._save_cache()
 
             return note
+        
         except Exception as e:
             logger.error(f"Failed to update note '{note_id}': {e}")
             raise

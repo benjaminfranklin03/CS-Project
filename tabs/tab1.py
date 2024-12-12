@@ -12,6 +12,7 @@ import plotly.express as px
 def render_tab1(note_system):
     
     st.header("Note Clusters Visualization")
+    
     # check if there are enough notes
     if len(note_system.notes) >= 2:
         clusters = note_system.cluster_notes()
@@ -32,7 +33,7 @@ def render_tab1(note_system):
 
         df = pd.DataFrame(data)
 
-        # Separate dataframes for centroids and non-centroids
+        # separate dataframes for centroids and non-centroids
         df_centroids = df[df['is_centroid']]
         df_non_centroids = df[~df['is_centroid']]
 
@@ -119,6 +120,7 @@ def render_tab1(note_system):
 
         # displaying cluster information
         st.subheader("Cluster Information")
+        
         for cluster_id, note_ids in clusters.items():
             with st.expander(f"Cluster {cluster_id} ({len(note_ids)} notes)"):
                 cluster_notes = [note_system.notes[n_id] for n_id in note_ids]
@@ -131,5 +133,6 @@ def render_tab1(note_system):
     
     elif note_system.notes:
         st.info("Add another note to see the cluster visualization!")
+        
     else:
         st.info("Add some notes to see the cluster visualization!")

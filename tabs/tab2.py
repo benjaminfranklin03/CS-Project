@@ -21,8 +21,10 @@ GRAPH_FILE = "cache/knowledge_graph.json"
 def render_tab2(note_system):
     
     st.header("All Notes")
+    
     if note_system.notes:
         for note_id, note in list(note_system.notes.items()):
+            
             # unique keys for session state
             toggle_summary_key = f"show_summary_{note_id}"
             edit_mode_key = f"edit_mode_{note_id}"
@@ -39,7 +41,7 @@ def render_tab2(note_system):
                 st.write(f"**Created:** {note.created_at.strftime('%Y-%m-%d %H:%M')}")
                 st.write(f"**Cluster:** {note.cluster_id}")
 
-                # Show Summary Toggle
+                # 'show summary' toggle
                 if st.button("Show Summary", key=f"toggle_summary_{note_id}"):
                     st.session_state[toggle_summary_key] = not st.session_state[toggle_summary_key]
 
@@ -47,10 +49,11 @@ def render_tab2(note_system):
                     if note.summary:
                         st.write("**Summary:**")
                         st.write(note.summary)
+                        
                     else:
                         st.error("No summary available for this note.")
 
-                # Edit Note Button
+                # Edit Note button
                 if st.button("Edit Note", key=f"edit_note_{note_id}"):
                     st.session_state[edit_mode_key] = True
 
@@ -67,24 +70,28 @@ def render_tab2(note_system):
                             old_title = note.title
                             note_system.update_note(note_id, new_content, new_title)
                             st.success(f"Note '{new_title}' updated successfully.")
-                            # Update knowledge graph if title changed
+                            
+                            # update knowledge graph if title changed
                             if new_title != old_title:
                                 rename_node_in_graph(st.session_state.knowledge_graph, old_title, new_title)
                                 save_graph(st.session_state.knowledge_graph, GRAPH_FILE)
+                                
                             st.session_state[edit_mode_key] = False
                             st.rerun()
                             
                         except ValueError as ve:
                             st.error(str(ve))
                             logger.error(f"ValueError updating note: {ve}")
+                            
                         except Exception as e:
                             st.error("An error occurred while updating the note.")
                             logger.error(f"Exception updating note: {e}")
+                            
                     elif cancel_edit:
                         st.session_state[edit_mode_key] = False
                         st.rerun()
 
-                # Delete Note Button
+                # Delete Note button
                 if st.button("Delete Note", key=f"delete_{note_id}"):
                     success = note_system.delete_note(note_id)
                     if success:
@@ -94,9 +101,10 @@ def render_tab2(note_system):
                     else:
                         st.error(f"Failed to delete note: {note.title}")
 
-                # Show Note Content if not in edit mode
+                # show note content if not in edit mode
                 if not st.session_state[edit_mode_key]:
                     st.write("**Content:**")
                     st.write(note.content)
+                    
     else:
         st.info("No notes added yet. Add some notes using the sidebar!")

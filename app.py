@@ -45,19 +45,23 @@ def get_note_system():
 def main():
     
     # page configuration
+    logger.debug("Setting up page configuration")
     st.set_page_config(page_title="Notesidian", page_icon="💡", layout="wide")
     
     # injecting global CSS for customization
+    logger.debug("Injecting global CSS")
     inject_global_css()
     
     st.title("💡 Notesidian") 
 
     # initializing note system and knowledge graph
+    logger.debug("Initializing NoteEmbeddingSystem")
     note_system = get_note_system()
     if 'knowledge_graph' not in st.session_state:
         st.session_state.knowledge_graph = load_graph(GRAPH_FILE)
 
     # add current notes to the knowledge graph
+    logger.debug("Adding notes to knowledge graph")
     for note_id, note in note_system.notes.items():
         cluster_id = note.cluster_id or 0
         st.session_state.knowledge_graph.add_node(note.title, cluster_id=cluster_id)
@@ -96,3 +100,5 @@ def main():
 # ===========================================================
 if __name__ == "__main__":
     main()
+
+
