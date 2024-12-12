@@ -5,6 +5,7 @@ import os
 import logging
 import streamlit as st
 from openai import OpenAI  
+import string
 
 # ===========================================================
 # Logging
@@ -46,8 +47,8 @@ def construct_rag_prompt(question, last_response, retrieved_notes):
     context = f"Model: {last_response}" if last_response else ""
 
     # Add newly retrieved notes
-    retrieved_info = "\n\n".join(
-        f"Note: {note['title']}\nSummary: {note['summary']}" for note in retrieved_notes
+    retrieved_info = "\n".join(
+        f"<Summary{letter}>:\n{note['title']}\n\{note['summary']}</Summary{letter}>" for letter, note in zip(string.ascii_uppercase, retrieved_notes)
     )
 
     # Combine all parts to form the prompt

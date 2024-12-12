@@ -18,7 +18,7 @@ The application also integrates GPT-based Retrieval-Augmented Generation (RAG) f
 
   - Create, edit, and delete notes through an intuitive interface.
   - Upload and process text or PDF files as notes.
-  - Automatically generate summaries for your notes with distilbart-cnn-12-6 *(optimized for gpu with FP16)*.
+  - Automatically generate summaries for your notes with distilbart-cnn-12-6 _(optimized for gpu with FP16)_.
 
 - **📊 Semantic Clustering**
 
@@ -41,7 +41,9 @@ The application also integrates GPT-based Retrieval-Augmented Generation (RAG) f
 
 ## Video
 
-A walkthrough video demonstrating how to get started with Notesidian and its key features will be added soon!
+<p align="center">
+  <a href="https://drive.google.com/file/d/1hY9Ha8erH-HxJk4ALLBXXwInL9kPdqbQ/view?usp=drive_link" target="_blank">Click here to watch the video</a>
+</p>
 
 ## Setup Instructions
 
@@ -90,16 +92,17 @@ streamlit run app.py
 
 ## Contribution Matrix
 
-|                    | **Ben Mulder**    | **Artan Sadriji**   | **Frederick Ohle** | **Alex Degenhardt**    |
-|--------------------|------------|-------------|---------------|-------------|
-| **Project Management** | ★          | ●           | ◐             | ○           |
-| **Conceptualization**  | ★          | ●           | ●             | ◐           |
-| **Code Development**   | ★          | ○           | ○             | ○           |
-| **Documentation**      | ★          | ○           | ○             | ○           |
-| **Presentation**       | ★          | ●           | ●             | ○           |
-| **Video**              | ●          | ●           | ●             | ●           |
+|                        | **Ben Mulder** | **Artan Sadriji** | **Frederick Ohle** | **Alex Degenhardt** |
+| ---------------------- | -------------- | ----------------- | ------------------ | ------------------- |
+| **Project Management** | ★              | ●                 | ◐                  | ○                   |
+| **Conceptualization**  | ★              | ●                 | ●                  | ◐                   |
+| **Code Development**   | ★              | ○                 | ○                  | ○                   |
+| **Documentation**      | ★              | ○                 | ○                  | ○                   |
+| **Presentation**       | ★              | ●                 | ●                  | ○                   |
+| **Video**              | ●              | ◐                 | ◐                  | ★                   |
 
 ## Legend
+
 - **★** Main Contributor
 - **●** Contributor
 - **◐** Supporting Role
