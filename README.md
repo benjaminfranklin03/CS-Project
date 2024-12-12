@@ -18,7 +18,7 @@ The application also integrates GPT-based Retrieval-Augmented Generation (RAG) f
 
   - Create, edit, and delete notes through an intuitive interface.
   - Upload and process text or PDF files as notes.
-  - Automatically generate summaries for your notes with distilbart-cnn-12-6 _(optimized for gpu with FP16)_.
+  - Automatically generate summaries for your notes with distilbart-cnn-12-6.
 
 - **📊 Semantic Clustering**
 
